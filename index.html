@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1a1512">
+  <meta name="description" content="Throw a pot on a simulated wheel with your hands, then export it as an STL for 3D printing.">
+  <title>Wheel — throw a pot, print it</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="view" aria-label="Potter's wheel. Hold the left mouse button to touch the clay."></canvas>
+
+  <header class="brand">
+    <span class="wordmark">wheel<span class="dot">.</span></span>
+    <span class="tagline">throw a pot · print it</span>
+    <button class="ghost-button" id="help-button">How to throw <kbd>H</kbd></button>
+  </header>
+
+  <nav id="tools" aria-label="Hands and tools"></nav>
+
+  <aside class="panel" aria-label="Your pot">
+    <div class="panel-title">Section</div>
+    <canvas id="section"></canvas>
+    <dl class="stats">
+      <div><dt>Height</dt><dd id="stat-height"></dd></div>
+      <div><dt>Width</dt><dd id="stat-width"></dd></div>
+      <div><dt>Thinnest wall</dt><dd id="stat-wall"></dd></div>
+      <div><dt>Floor</dt><dd id="stat-floor"></dd></div>
+      <div><dt>Clay</dt><dd id="stat-mass"></dd></div>
+      <div><dt>Centring</dt><dd id="stat-centre"></dd></div>
+    </dl>
+    <div class="panel-title">Finish preview</div>
+    <div id="swatches"></div>
+    <div class="panel-title">Export</div>
+    <div class="export">
+      <label>Scale <input id="scale" type="number" value="100" min="1" max="1000" step="5"> %</label>
+      <button class="primary" id="export-button">Download STL <kbd>E</kbd></button>
+    </div>
+  </aside>
+
+  <footer class="bar">
+    <div class="group">
+      <button id="wheel-button" class="wheel-button">Start wheel</button>
+      <input id="rpm" type="range" min="0" max="240" step="10" value="120" aria-label="Wheel speed">
+      <span id="rpm-label" class="readout"></span>
+    </div>
+    <div class="group" id="gap-row" hidden>
+      <span class="label">Pinch</span>
+      <input id="gap" type="range" min="3" max="20" step="1" value="6" aria-label="Wall thickness between fingers">
+      <span id="gap-label" class="readout"></span>
+    </div>
+    <div class="group">
+      <span class="label">Water</span>
+      <div class="water"><div id="water-fill"></div></div>
+      <button id="water-button">Sponge <kbd>W</kbd></button>
+    </div>
+    <div class="group">
+      <button id="undo-button">Undo <kbd>Z</kbd></button>
+      <select id="body" aria-label="Clay body">
+        <option value="terracotta">Terracotta</option>
+        <option value="stoneware">Stoneware</option>
+        <option value="porcelain">Porcelain</option>
+      </select>
+      <select id="mass" aria-label="Amount of clay">
+        <option value="500">500 g</option>
+        <option value="1000" selected>1 kg</option>
+        <option value="2000">2 kg</option>
+      </select>
+      <button id="new-button">New clay</button>
+    </div>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <section id="help" class="help">
+    <h1>Throw a pot.</h1>
+    <p>Your clay has just been slapped onto the wheel, a little off-centre. Pick a hand, start the wheel, and <b>hold the left mouse button</b> to touch the clay. Where the cursor sits on the clay is where your hand pushes.</p>
+    <ol>
+      <li><b>Centre.</b> <kbd>Space</kbd> starts the wheel. With <b>Palms</b> <kbd>1</kbd>, squeeze the sides until the wobble is gone. Squeezing cones it up, <b>Press</b> <kbd>2</kbd> spreads it down again.</li>
+      <li><b>Open.</b> <b>Thumb</b> <kbd>3</kbd>: press down at the very centre, stop above the wheel to leave a floor, then drag outward to widen it.</li>
+      <li><b>Pull.</b> <b>Pull</b> <kbd>4</kbd>: put the cursor on the wall and lift slowly. The wall gets thinner and taller. <kbd>[</kbd> <kbd>]</kbd> set the pinch.</li>
+      <li><b>Shape.</b> <b>Finger</b> <kbd>5</kbd> pushes in, the inside finger of Pull pushes out, the <b>Rib</b> <kbd>6</kbd> straightens. <b>Needle</b> <kbd>7</kbd> levels a ragged rim.</li>
+      <li><b>Export.</b> Preview a glaze, then download an STL in millimetres, sealed and ready to slice.</li>
+    </ol>
+    <p class="small">Clay is never created or lost: squeeze it and it rises, press it and it spreads. On a still wheel your hand only dents one side. Hands dry the clay; sponge it with <kbd>W</kbd>. Right-drag or Shift-drag to look around, scroll to zoom, <kbd>Z</kbd> to undo.</p>
+    <button class="primary" id="help-close">Start throwing</button>
+  </section>
+
+  <div id="fatal" class="fatal" hidden></div>
+  <script src="app.bundle.js"></script>
+</body>
+</html>
